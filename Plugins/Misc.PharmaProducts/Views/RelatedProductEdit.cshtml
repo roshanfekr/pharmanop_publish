@@ -1,0 +1,134 @@
+@model ProductModel
+
+@{
+    Layout = "_ConfigurePlugin";
+    Html.AddCssFileParts("~/Plugins/Misc.PharmaProducts/Content/styles.css", excludeFromBundle: true);
+    Html.SetActiveMenuItemSystemName("Products");
+}
+
+
+<div asp-validation-summary="ModelOnly"></div>
+<input asp-for="Id" type="hidden" />
+
+<script>
+    $(document).ready(function() {
+        //toggleTaxDisplayType();
+
+        toggleRemoveButton();
+    });
+
+    @*function toggleTaxDisplayType() {
+        if ($('#@Html.IdFor(model => model.OverrideTaxDisplayType)').is(':checked')) {
+            $('#pnlDefaultTaxDisplayType').show();
+        } else {
+            $('#pnlDefaultTaxDisplayType').hide();
+        }
+    }*@
+
+    function toggleRemoveButton() {
+        if ($('#@Html.IdFor(model => model.DaruId)').val() > 0) {
+            $('#daru-name-remove').show();
+        } else {
+            $('#daru-name-remove').hide();
+        }
+    }
+</script>
+<form asp-controller="Pharma" asp-action="CreatePharmaRelation" method="post">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Nop.Plugin.Misc.PharmaProduct.DaruRelation.Edit")
+            <small>
+                <i class="fa fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Nop.Plugin.Misc.PharmaProduct.DaruRelation.BackToList")</a>
+            </small>
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+        </div>
+
+    </div>
+    <div class="content">
+
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <nop-label asp-for="ProductName" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="ProductName" asp-required="true" disabled />
+                                <span asp-validation-for="ProductName"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <nop-label asp-for="ProductSku" disabled />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="ProductSku" disabled />
+                                <span asp-validation-for="ProductSku"></span>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none">
+                            <div class="col-md-3">
+                                <nop-label asp-for="ProductId"  />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="ProductId" disabled />
+                                <span asp-validation-for="ProductId"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <nop-label asp-for="DaruName" />
+                            </div>
+                            <div class="col-md-9">
+                                <input type="hidden" asp-for="DaruId" />
+                                <span id="daru-name">@Model.DaruName</span>
+                                <span asp-validation-for="DaruId"></span>
+                                <button type="submit" onclick="javascript:OpenWindow('@(Url.Action("AssociatePharmaProductPopup", "Pharma", new {daruIdInput = Html.IdFor(model => model.DaruId), daruNameInput = "daru-name", btnId = "btnRefreshDaru"}))', 800, 850, true); return false;" class="btn btn-primary">
+                                    @T("Nop.Plugin.Misc.PharmaProduct.Fields.Choose")
+                                </button>
+                                @*<button type="submit" id="daru-name-remove" class="btn bg-red">
+                                    @T("Nop.Plugin.Misc.PharmaProduct.Fields.Remove")
+                                </button>*@
+                                <input type="submit" id="btnRefreshDaru" style="display: none" />
+
+                                <script>
+                                $(document).ready(function () {
+                                    $('#daru-name-remove').click(function () {
+                                        $('#daru-name').text('');
+                                        $("#@Html.IdFor(model => model.DaruId)").val(0);
+                                        toggleRemoveButton();
+                                        //return false to don't reload a page
+                                        return false;
+                                    });
+
+                                    $('#btnRefreshDaru').click(function () {
+                                        toggleRemoveButton();
+
+                                        //return false to don't reload a page
+                                        return false;
+                                    });
+                                });
+                                </script>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>

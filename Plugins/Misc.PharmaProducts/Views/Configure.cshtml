@@ -1,0 +1,99 @@
+﻿@model ConfigurationModel
+@using Nop.Plugin.Misc.Pharma.Models
+
+@{
+    Layout = "_ConfigurePlugin";
+    Html.AddCssFileParts("~/Plugins/Misc.PharmaProducts/Content/styles.css", excludeFromBundle: true);
+}
+
+
+<form asp-controller="Pharma" asp-action="Configure" method="post">
+    <div id="panel panel-default">
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="ConnectionString" />
+                </div>
+
+                <div class="col-md-6">
+                    <nop-editor id="ConnectionString" asp-for="ConnectionString" asp-required="true" />
+
+                    <span asp-validation-for="ConnectionString"></span>
+                </div>
+                @if (Model.Connected)
+                {
+                    <div class="col-md-2">
+                        @Html.Raw("<span class=\"fa fa-check true-icon\" nop-value=\"true\"/>")
+                    </div>
+                }
+
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="DefaultDoctorID" />
+                </div>
+                <div class="col-md-6">
+                    <nop-editor asp-for="DefaultDoctorID" asp-required="true" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="InsureID" />
+                </div>
+                <div class="col-md-6">
+                    <nop-editor asp-for="InsureID" asp-required="true" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="InsurePrescriptionType" />
+                </div>
+                <div class="col-md-6">
+                    <nop-editor asp-for="InsurePrescriptionType" asp-required="true" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-9 col-md-offset-3">
+                <input type="submit" name="save" class="btn btn-primary" value="@T("Admin.Common.Save")" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="row">
+
+        
+</div>
+
+<script>
+    function check_connection()
+    {
+        postData = $('#ConnectionString').val();
+        
+
+        //var configurationmodel = {
+        //    ConnectionString: postData
+        //};
+
+        alert(JSON.stringify({ ConnectionString: postData }));
+
+
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify({ ConnectionString: postData }) ,
+            url: "@(Url.Action("CheckConnection", "Pharma"))",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data, textStatus, jqXHR) {
+                alert(data);
+            }
+        }).done(function (res) {
+            
+        });
+
+    }
+
+</script>

@@ -1,0 +1,206 @@
+﻿@model PharmaSyncLogSearchModel
+@using Nop.Plugin.Misc.Pharma.Models
+
+@using System.Collections.Generic;
+
+
+@{ 
+    Layout = "_ConfigurePlugin";
+    Html.AddCssFileParts("~/Plugins/Misc.PharmaProducts/Content/styles.css", excludeFromBundle: true);
+    Html.SetActiveMenuItemSystemName("Products");
+}
+
+
+@{ const string hideSearchBlockAttributeName = "ProductListPage.HideSearchBlock";
+    bool hideSearchBlock = false; }
+
+<form asp-controller="Pharma" asp-action="List" method="post">
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default panel-search">
+                    <div class="panel-body">
+                        <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fa fa-search" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="fa fa-angle-down" aria-hidden="true"></i></div>
+                        </div>
+
+                        <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="Type" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="Type" asp-items="Model.AvailableTypes" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="Status" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-editor asp-for="Status" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-7">
+
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-7 col-md-offset-5">
+                                    <button type="button" id="search-sync-log" class="btn btn-primary btn-search">
+                                        <i class="fa fa-search"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                   {
+                       Name = "pharma-sync-log-grid",
+                       UrlRead = new DataUrl("SyncLogSearchList", "Pharma", null),
+                       SearchButtonId = "search-sync-log",
+                       Length = Model.PageSize,
+                       LengthMenu = Model.AvailablePageSizes,
+                       Filters = new List<FilterParameter>
+                            {
+                                new FilterParameter(nameof(Model.DaruName)),
+                                new FilterParameter(nameof(Model.Type)),
+                                new FilterParameter(nameof(Model.ProductName)),
+
+                            },
+                       ColumnCollection = new List<ColumnProperty>
+                               {
+                                //new ColumnProperty(nameof(PharmaSourceProductModel.Id))
+                                //{
+                                //    IsMasterCheckBox = true,
+                                //    Render = new RenderCheckBox("checkbox_products"),
+                                //    ClassName =  NopColumnClassDefaults.CenterAll,
+                                //    Width = "50"
+                                //}
+                                //,
+                                new ColumnProperty(nameof(PharmaSyncLogModel.Type))
+                                {
+                                    Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Log.Type").Text
+                                }
+                                ,
+                                new ColumnProperty(nameof(PharmaSyncLogModel.Status))
+                                {
+                                    Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Log.Status").Text
+                                    , Width = "50"
+
+                                },
+                                new ColumnProperty(nameof(PharmaSyncLogModel.Error))
+                                {
+                                    Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Log.Error").Text
+                                    , Width = "200"
+
+                                },
+                                new ColumnProperty(nameof(PharmaSyncLogModel.UpdateTime))
+                                {
+                                    Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Log.UpdateTime").Text
+                                    , Width = "100"
+
+                                },
+                                new ColumnProperty(nameof(PharmaSyncLogModel.ProductName))
+                                {
+                                    Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Log.ProductName").Text
+                                    , Width = "100"
+
+                                },
+                                new ColumnProperty(nameof(PharmaSyncLogModel.DaruName))
+                                {
+                                    Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Log.DaruName").Text
+                                }
+                            },
+
+
+                   })
+
+
+                        <script>
+
+                            @*function renderColumnViewAndImport(data, type, row, meta) {
+                                if (row.Imported)
+                                    return '<button type="button" onclick="product_edit(' + row.ProductId + ')" class="btn btn-default">@T("Admin.Common.Edit")</button>';
+                                else
+                                    return '<button type="button" onclick="pharmaViewAndImport(' + row.Id + ')" class="btn btn-default">@T("Nop.Plugin.Misc.PharmaProduct.Import")</button>';
+                            }*@
+
+
+                            function renderColumnImport(data, type, row, meta) {
+                                if (row.Imported)
+                                    return '<button type="button" onclick="product_edit(' + row.ProductId + ')" class="btn btn-default">@T("Admin.Common.Edit")</button>';
+                                else
+                                    return '<button type="button" onclick="pharmaImport(' + row.Id + ')" class="btn btn-default">@T("Nop.Plugin.Misc.PharmaProduct.Import")</button>';
+                            }
+
+                            @*function pharmaViewAndImport(daruId ) {
+                                //load "product details page" block
+                                var pharmaActionUrl = '@Html.Raw(Url.Action("ViewAndImport", "Pharma", new { id = "daru_id"}))';
+                                pharmaActionUrl = pharmaActionUrl.replace("daru_id", daruId);
+                                alert(pharmaActionUrl);
+                                setLocation(pharmaActionUrl);
+                            }*@
+
+                            function pharmaImport(daruId ) {
+                                //load "product details page" block
+                                var pharmaActionUrl = '@Html.Raw(Url.Action("Import", "Pharma", new { id = "daru_id"}))';
+                                pharmaActionUrl = pharmaActionUrl.replace("daru_id", daruId);
+                                setLocation(pharmaActionUrl);
+                            }
+                            function product_edit(productId) {
+                                //load "product details page" block
+                                var productActionUrl = '@Html.Raw(Url.Action("Edit", "Product" , new { id = "product_id"}))';
+                                productActionUrl = productActionUrl.replace("product_id", productId);
+                                setLocation(productActionUrl);
+                            }
+
+                            $(document).ready(function () {
+                                $('#delete-selected-action-confirmation-submit-button').bind('click', function () {
+                                    var postData = {
+                                        selectedIds: selectedIds
+                                    };
+                                    addAntiForgeryToken(postData);
+                                    $.ajax({
+                                        cache: false,
+                                        type: "POST",
+                                        url: "@(Url.Action("DeleteSelected", "Product"))",
+                                        data: postData,
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $('#deleteSelectedFailed-info').text(errorThrown);
+                                            $('#deleteSelectedFailed').click();
+                                        },
+                                        complete: function (jqXHR, textStatus) {
+                                            updateTable('#products-grid');
+                                        }
+                                    });
+                                    $('#delete-selected-action-confirmation').modal('toggle');
+                                    return false;
+                                });
+                            });
+
+                        </script>
+                        <nop-alert asp-alert-id="deleteSelectedFailed" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

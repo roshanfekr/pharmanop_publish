@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Misc",
+  "FriendlyName": "PharmaProduct",
+  "SystemName": "Misc.PharmaProduct",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.30" ],
+  "Author": "Mohammad Roshanferk",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.PharmaProduct.dll",
+  "Description": "This plugin allows to import tebyan product to nop."
+}

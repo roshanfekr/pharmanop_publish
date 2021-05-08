@@ -1,0 +1,223 @@
+﻿@model PharmaProductSearchModel
+
+@{
+    Layout = "_AdminPopupLayout";
+
+    //page title
+    ViewBag.PageTitle = T("Nop.Plugin.Misc.PharmaProduct.Fields.Choose").Text;
+}
+
+@{ 
+    const string hideSearchBlockAttributeName = "ProductListPage.HideSearchBlock";
+    bool hideSearchBlock = false; 
+    }
+<form asp-controller="Pharma" asp-action="AssociatePharmaProductPopup"
+      asp-route-daruIdInput="@Context.Request.Query["daruIdInput"]"
+      asp-route-daruNameInput="@Context.Request.Query["daruNameInput"]"
+      asp-route-btnId="@Context.Request.Query["btnId"]">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Nop.Plugin.Misc.PharmaProduct.Fields.Choose")
+        </h1>
+        <div class="pull-right">
+            &nbsp;
+        </div>
+    </div>
+
+    @if (ViewBag.RefreshPage == true)
+    {
+<script>
+            try {
+                window.opener.document.getElementById('@(Context.Request.Query["daruIdInput"])').value = '@(ViewBag.daruId)';
+                window.opener.document.getElementById('@(Context.Request.Query["daruNameInput"])').innerHTML = '@(ViewBag.daruName)';
+                window.opener.document.getElementById('@(Context.Request.Query["btnId"])').click();
+            }
+            catch (e){}
+            window.close();
+</script>
+    }
+    else
+    {
+
+        <input type="hidden" asp-for="AddPharmaProductModel.AssociatedToDaruId" />
+
+        <div class="content">
+                <div class="form-horizontal">
+                    <div class="panel-group">
+                        <div class="panel panel-default panel-search">
+                            <div class="panel-body">
+                                <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                                    <div class="search-text">@T("Admin.Common.Search")</div>
+                                    <div class="icon-search"><i class="fa fa-search" aria-hidden="true"></i></div>
+                                    <div class="icon-collapse"><i class="fa fa-angle-down" aria-hidden="true"></i></div>
+                                </div>
+
+                                <div class="search-body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="SearchProductName" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-editor asp-for="SearchProductName" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    <nop-label asp-for="HasPrice" />
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <nop-editor asp-for="HasPrice" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-7">
+
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-7 col-md-offset-5">
+                                            <button type="button" id="search-products" class="btn btn-primary btn-search">
+                                                <i class="fa fa-search"></i>
+                                                @T("Admin.Common.Search")
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                @await Html.PartialAsync("Table", new DataTablesModel
+                                   {
+                                       Name = "pharma-products-grid",
+                                       UrlRead = new DataUrl("SourceProductList", "Pharma", null),
+                                       SearchButtonId = "search-products",
+                                       Length = Model.PageSize,
+                                       LengthMenu = Model.AvailablePageSizes,
+                                       Filters = new List<FilterParameter>
+                                                 {
+                                                     new FilterParameter(nameof(Model.SearchProductName)),
+                                                     new FilterParameter(nameof(Model.SearchType)),
+                                                     new FilterParameter(nameof(Model.HasPrice), typeof(bool)),
+
+                                                 },
+
+                                       ColumnCollection = new List<ColumnProperty> {
+                                                     new ColumnProperty(nameof(ProductModel.Id))
+                                                     {
+                                                         Title = T("Admin.Common.Select").Text,
+                                                         Render = new RenderCustom("renderColumnSelectProduct"),
+                                                         ClassName =  NopColumnClassDefaults.Button,
+                                                         Width = "50",
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.PersianName))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.PersianName").Text
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.GenericName))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.GenericName").Text
+                                                                     , Width = "200"
+
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.BrandName))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.BrandName").Text
+                                                                     , Width = "200"
+
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.Quantity))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Quantity").Text
+                                                                     , Width = "100"
+
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.UnitPrice))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.UnitPrice").Text
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.Price))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.Price").Text
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.PersianBrandName))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.PersianBrandName").Text
+                                                     },
+                                                     new ColumnProperty(nameof(PharmaSourceProductModel.NationalCode))
+                                                     {
+                                                         Title = T("Nop.Plugin.Misc.PharmaProduct.Fields.NationalCode").Text,
+                                                         Width = "100",
+                                                     }
+
+                                       }
+                                   }
+                               )
+
+
+                                <script>
+
+
+
+                                    function renderColumnSelectProduct(data, type, row, meta) {
+                                        return '<button type="button" onclick="selectAssociatedProduct(' + row.Id + ' )" class="btn btn-default">@T("Admin.Common.Select")</button>';
+                                    };
+
+                                    function selectAssociatedProduct(productid) {
+                                       // alert(productid);
+                                        $("#@Html.IdFor(model => model.AddPharmaProductModel.AssociatedToDaruId)").val(productid);
+                                        $('#save').click();
+                                    };
+
+
+                                    $(document).ready(function () {
+                                        $('#delete-selected-action-confirmation-submit-button').bind('click', function () {
+                                            var postData = {
+                                                selectedIds: selectedIds
+                                            };
+                                            addAntiForgeryToken(postData);
+                                            $.ajax({
+                                                cache: false,
+                                                type: "POST",
+                                                url: "@(Url.Action("DeleteSelected", "Product"))",
+                                                data: postData,
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    $('#deleteSelectedFailed-info').text(errorThrown);
+                                                    $('#deleteSelectedFailed').click();
+                                                },
+                                                complete: function (jqXHR, textStatus) {
+                                                    updateTable('#products-grid');
+                                                }
+                                            });
+                                            $('#delete-selected-action-confirmation').modal('toggle');
+                                            return false;
+                                        });
+                                    });
+
+                                </script>
+
+                                <nop-alert asp-alert-id="deleteSelectedFailed" />
+                            </div>
+                            <div class="panel-footer">
+                                <button type="submit" id="save" name="save" class="btn btn-default" style="display: none">
+                                    @T("Admin.Common.Save")
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    }
+</form>
+
+
