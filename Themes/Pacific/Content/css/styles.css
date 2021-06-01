@@ -3658,6 +3658,11 @@ span[title~="White"] .attribute-square {
 .variant-overview .min-qty-notification {
 	margin: 0 0 10px;
 }
+
+.add-to-cart-panel {
+    direction:ltr
+}
+
 .overview .add-to-cart-panel,
 .variant-overview .add-to-cart-panel {
 	position: relative;
