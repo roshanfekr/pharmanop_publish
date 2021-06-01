@@ -3668,8 +3668,9 @@ span[title~="White"] .attribute-square {
 }
 .overview .add-to-cart-panel,
 .variant-overview .add-to-cart-panel {
-	position: relative;
+    position: relative;
     overflow: hidden;
+    direction: ltr;
 }
 .overview .qty-label,
 .variant-overview .qty-label {
