@@ -1,0 +1,227 @@
+﻿@model Nop.Plugin.Misc.ProductBundle.Model.Web.ProductBundleMasterModel
+@*@inject SaleOfTheDaySettings saleOfTheDaySettings
+
+*@
+
+@inject Microsoft.AspNetCore.Mvc.ViewComponents.IViewComponentSelector viewComponentSelector
+
+@inject Nop.Services.Catalog.IProductService productService
+@inject Nop.Services.Media.IPictureService pictureService
+@inject Nop.Web.Factories.IProductModelFactory _productModelFactory
+@inject IThemeContext _themeContext;
+@{
+    Html.AddCssFileParts("~/Plugins/Misc.ProductBundle/Themes/" + _themeContext.WorkingThemeName + "/Content/SaleOfTheDay.css");
+
+    var supportRtlClass = string.Empty;
+
+    var supportRtl = this.ShouldUseRtlTheme();
+    if (supportRtl)
+    {
+        Html.AddCssFileParts("~/Plugins/Misc.ProductBundle/Themes/" + _themeContext.WorkingThemeName + "/Content/SaleOfTheDay.rtl.css");
+
+        supportRtlClass = "support-rtl";
+    }
+
+    Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/Misc.ProductBundle/Scripts/owl.carousel.min.js");
+    Html.AddCssFileParts("~/Plugins/Misc.ProductBundle/Styles/owl.carousel.css");
+
+    Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/Misc.ProductBundle/Themes/" + _themeContext.WorkingThemeName + "/Content/Scripts/SaleOfTheDay.min.js");
+
+    bool hasAnySpecialPrice = Model.ProductBundleListModel.Any(x => x.AmazingStartDate.HasValue && x.AmazingEndDate.HasValue);
+
+    if (hasAnySpecialPrice)
+    {
+        Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/SevenSpikes.Core/Scripts/sevenspikes.core.min.js");
+        Html.AddScriptParts(ResourceLocation.Footer, "~/Plugins/Misc.ProductBundle/Scripts/SaleOfTheDay.countdown.timer.min.js");
+    }
+}
+
+<div class="sale-of-the-day-offer @supportRtlClass">
+    @*@foreach (var offer in Model.){*@
+    <div class="title">
+        <span class="new-prev"></span>
+        <a href="/AmazingProducts/@Model.ProductBundleCategorySeName"><strong>@Model.Title</strong></a>
+        <span class="new-next"></span>
+    </div>
+    <div class="grid @if (Model.ProductBundleListModel.Count > 1){<text>owl-carousel</text>}">
+        @foreach (var productB in Model.ProductBundleListModel)
+        {
+            <div class="product-element sale-of-the-day-product-@productB.Id-@productB.ProductId" data-productid="@productB.ProductId">
+                <div class="sale-item @if (productB.AmazingEndDate.HasValue) { <text>timed-offer</text> }">
+                    <!--product pictures-->
+                    <div class="item-gallery">
+                        <div class="item-picture">
+                            <a href="@Url.RouteUrl("Product", new { SeName = productB.ProductSeName })" title="@productB.ProductName">
+                                @if (viewComponentSelector.SelectComponent("LazyLoadImage") != null)
+                                {
+                                    var productPicture = productService.GetProductPicturesByProductId(productB.ProductId).FirstOrDefault();
+                                    if (productPicture != null)
+                                    {
+                                        var picture = pictureService.GetPictureById(productPicture.PictureId);
+                                        @await Component.InvokeAsync("LazyLoadImage", new (string Key, string Value)[]
+                                        {
+                                            ("src", pictureService.GetPictureUrl(picture.Id)),
+                                            ("alt", picture.AltAttribute),
+                                            ("title", picture.TitleAttribute)
+                                        })
+                                    }
+                                }
+                                else
+                                {
+                                    var productPicture = productService.GetProductPicturesByProductId(productB.ProductId).FirstOrDefault();
+                                    if (productPicture != null)
+                                    {
+                                        var picture = pictureService.GetPictureById(productPicture.PictureId);
+                                        <img alt="@picture.AltAttribute" src="@pictureService.GetPictureUrl(picture.Id)"
+                                             title="@picture.TitleAttribute" />
+                                    }
+                                }
+                            </a>
+                        </div>
+                        @{
+
+                            var productPictures = productService.GetProductPicturesByProductId(productB.ProductId);
+
+                        }
+
+                        @if (productPictures != null && productPictures.Count > 1)
+                        {
+
+                            <div class="picture-thumbs">
+                                @foreach (var picRaw in productPictures)
+                                {
+                                    var picture = new PictureModel
+                                    {
+                                        FullSizeImageUrl = pictureService.GetPictureUrl(picRaw.PictureId),
+                                        //TODO CHECK
+                                        ImageUrl = pictureService.GetPictureUrl(picRaw.PictureId)//, mediaSettings.ProductDetailsPictureSize)
+                                    };
+
+                                    <a class="thumb-item" href="@picture.FullSizeImageUrl" title="@productB.ProductName">
+                                        @if (viewComponentSelector.SelectComponent("LazyLoadImage") != null)
+                                        {
+                                            @await Component.InvokeAsync("LazyLoadImage", new (string Key, string Value)[]
+                                            {
+                                                ("src", picture.ImageUrl),
+                                                ("alt", picture.AlternateText),
+                                                ("title", picture.Title)
+                                            })
+                                        }
+                                        else
+                                        {
+                                            <img src="@picture.ImageUrl" alt="@picture.AlternateText" title="@picture.Title" />
+                                        }
+                                    </a>
+                                }
+                            </div>
+
+                            <script type="text/javascript" asp-location="Footer">
+
+                                $('.sale-of-the-day-offer').on('click', '.sale-of-the-day-product-@productB.Id-@productB.ProductId .thumb-item', function (e) {
+                                    e.preventDefault();
+
+                                    var that = $(this);
+
+                                    var fullImageUrl = that.attr('href');
+                                    if (fullImageUrl == undefined || fullImageUrl == '') {
+                                        return;
+                                    }
+
+                                    $('.sale-of-the-day-product-@productB.Id-@productB.ProductId').find(".item-picture img").each(function () {
+                                        $(this).attr('src', fullImageUrl);
+                                    });
+                                });
+
+                            </script>
+                        }
+                    </div>
+
+                    <div class="overview">
+                        <!--countdown timer-->
+                        @{
+                            var productRaw = productService.GetProductById(productB.ProductId);
+                            var productModel = _productModelFactory.PrepareProductDetailsModel(productRaw);
+
+                            if (productB.AmazingEndDate.HasValue)
+                            {
+                                int dateTimeDifference = (int)(productB.AmazingEndDate.Value - DateTime.UtcNow).TotalSeconds;
+
+                                <div dir="ltr" class="countdown-timer" data-time="@dateTimeDifference">
+                                    <div class="timer-group days">
+                                        <span class="timer-info-box"></span>
+                                        <span class="timer-info-text"></span>
+                                    </div>
+                                    <div class="timer-group hours">
+                                        <span class="timer-info-box"></span>
+                                        <span class="timer-info-text"></span>
+                                    </div>
+                                    <div class="timer-group minutes">
+                                        <span class="timer-info-box"></span>
+                                        <span class="timer-info-text"></span>
+                                    </div>
+                                    <div class="timer-group seconds">
+                                        <span class="timer-info-box"></span>
+                                        <span class="timer-info-text"></span>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="product-name">
+                            <h2 class="item-name">
+                                <a href="@Url.RouteUrl("Product", new { SeName = productB.ProductSeName })">@productB.ProductName</a>
+                            </h2>
+                        </div>
+
+                        @if (productModel.ProductReviewOverview.AllowCustomerReviews)
+                        {
+                            var ratingPercent = 0;
+                            if (productModel.ProductReviewOverview.TotalReviews != 0)
+                            {
+                                ratingPercent = ((productModel.ProductReviewOverview.RatingSum * 100) / productModel.ProductReviewOverview.TotalReviews) / 5;
+                            }
+                            <div class="product-reviews-overview" @if (productModel.ProductReviewOverview.TotalReviews > 0) { <text> itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" </text> }>
+                                <div class="product-review-box">
+                                    <div class="rating">
+                                        <div style="width: @(ratingPercent)%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (!String.IsNullOrEmpty(productB.ProductShortDescription))
+                        {
+                            <div class="short-description">
+                                @Html.Raw(productB.ProductShortDescription)
+                            </div>
+                        }
+                        <div class="prices">
+                            <span class="price actual-price">@productB.Price</span>
+                            @if (!String.IsNullOrEmpty(productB.OldPrice))
+                            {
+                                <span class="price old-price">@productB.OldPrice</span>
+                            }
+                            @*@if (product.DisplayTaxShippingInfo)
+                                {
+                                    var inclTax = EngineContext.Current.Resolve<IWorkContext>().TaxDisplayType == TaxDisplayType.IncludingTax;
+                                    //tax info is already included in the price (incl/excl tax). that's why we display only shipping info here
+                                    //of course, you can modify appropriate locales to include VAT info there
+                                    <div class="tax-shipping-info">
+                                        @T(inclTax ? "Products.Price.TaxShipping.InclTax" : "Products.Price.TaxShipping.ExclTax", Url.RouteUrl("Topic", new { SeName = Html.GetTopicSeName("shippinginfo") }))
+                                    </div>
+                                }*@
+                        </div>
+                        <div class="buttons">
+                            <a href="@Url.RouteUrl("Product", new { SeName = productB.ProductSeName })" class="link"><span>@T("SevenSpikes.SaleOfTheDay.Public.GoToProductPage")</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @* } *@
+    <input type="hidden" id="saleOfTheDayInfo"
+           data-localization-day="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Day")" data-localization-days="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Days")"
+           data-localization-hour="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Hour")" data-localization-hours="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Hours")"
+           data-localization-minute="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Minute")" data-localization-minutes="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Minutes")"
+           data-localization-second="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Second")" data-localization-seconds="@T("SevenSpikes.Plugins.SaleOfTheDay.Public.Seconds")">
+</div>

@@ -1,0 +1,23 @@
+﻿.product-bundle-product-box {
+  color: #ffffff !important;
+  font-size: 15px;
+  display: inline-block;
+  width: 100%;
+  border-bottom: solid 2px;
+  height: 27px;
+
+  position: absolute;
+  border-bottom-color: #ff4014;
+  top: 0;
+  left: 0;
+  z-index: 8;
+}
+
+.product-bundle-product-box-span-right {
+    float: right;
+}
+
+.product-bundle-product-box-span-left {
+    float: left;
+}
+

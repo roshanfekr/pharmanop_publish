@@ -1,0 +1,279 @@
+﻿@model ProductOverviewModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Tax
+@using Nop.Services.Configuration
+@using Microsoft.AspNetCore.Mvc.ViewComponents
+@using Nop.Plugin.Misc.ProductBundle.Service
+@using Nop.Plugin.Misc.ProductBundle.Domain;
+@using Nop.Services.Catalog
+
+@inject IStoreContext storeContext
+@inject IWorkContext workContext
+@inject ISettingService settingService
+@inject CatalogSettings catalogSettings
+@inject IViewComponentSelector viewComponentSelector
+@inject IProductBundleService productBundleService
+@inject IProductBundleCategoryService productBundleCategoryService
+@inject IPriceFormatter priceFormatter
+
+@{
+    //prepare "Add to cart" AJAX link
+    var addtocartlink = "";
+    var shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart;
+    var quantity = 1;
+    if (Model.ProductPrice.ForceRedirectionAfterAddingToCart)
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, forceredirection = Model.ProductPrice.ForceRedirectionAfterAddingToCart });
+    }
+    else
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity });
+    }
+
+    var addtowishlistlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = (int)ShoppingCartType.Wishlist, quantity = quantity });
+    var addtocomparelink = Url.RouteUrl("AddProductToCompare", new { productId = Model.Id });
+
+    var storeId = storeContext.CurrentStore.Id;
+
+    object productBundlePictureUrlObj;
+    Model.CustomProperties.TryGetValue("productBundlePictureUrl", out productBundlePictureUrlObj);
+
+    var productBundlePictureUrl = "";
+    if (productBundlePictureUrlObj != null)
+    {
+        productBundlePictureUrl = productBundlePictureUrlObj.ToString();
+    }
+
+    object attributeCombinationIdObj;
+    Model.CustomProperties.TryGetValue("AttributeCombinationId", out attributeCombinationIdObj);
+
+    var attributeCombinationId = 0;
+    if (attributeCombinationIdObj != null)
+    {
+        attributeCombinationId = Convert.ToInt32(attributeCombinationIdObj);
+    }
+
+    ProductBundleCategory productBundleCategory = null;
+    var productBundle = productBundleService.GetAll(productId: Model.Id, attributeCombination: attributeCombinationId,
+                            justValid: true).FirstOrDefault();
+    if (productBundle != null)
+    {
+        productBundleCategory = productBundleCategoryService.GetById(productBundle.ProductBundleCategoryId.Value);
+    }
+
+    Html.AppendCssFileParts("~/Plugins/Misc.ProductBundle/Themes/Emporium/Content/css/ProductBundleProductBox.css");
+
+    var timerColor = "#000000";
+    if (productBundleCategory != null && !string.IsNullOrWhiteSpace(productBundleCategory.ProductTimerColor))
+    {
+        timerColor = productBundleCategory.ProductTimerColor;
+    }
+}
+@if (productBundle != null && productBundleCategory != null)
+{
+    <input type="hidden" id="countDownDate-@productBundle.Id" />
+
+    @if (productBundle.AmazingStartDateUtc.HasValue && productBundle.AmazingEndDateUtc.HasValue)
+    {
+        <script>
+            var temp = new Date("@productBundle.AmazingEndDateUtc.Value.Year",
+                "@(productBundle.AmazingEndDateUtc.Value.Month - 1)", "@productBundle.AmazingEndDateUtc.Value.Day", "@productBundle.AmazingEndDateUtc.Value.Hour",
+                "@productBundle.AmazingEndDateUtc.Value.Minute", "@productBundle.AmazingEndDateUtc.Value.Second")
+            document.getElementById("countDownDate-@productBundle.Id").value = temp;
+
+            // Update the count down every 1 second
+            var x = setInterval(function () {
+                // Get today's date and time
+                var now = new Date().getTime();
+                // Find the distance between now and the count down date
+                var date = new Date(document.getElementById("countDownDate-@productBundle.Id").value);
+                var distance = Date.parse(date) - now;
+                // Time calculations for days, hours, minutes and seconds
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                var strDays = "";
+                if (days > -1 && days < 10) {
+                    strDays = "0" + days;
+                } else {
+                    strDays = days;
+                }
+
+                var strHours = "";
+                if (hours > -1 && hours < 10) {
+                    strHours = "0" + hours;
+                } else {
+                    strHours = hours;
+                }
+
+                var strMinutes = "";
+                if (minutes > -1 && minutes < 10) {
+                    strMinutes = "0" + minutes;
+                } else {
+                    strMinutes = minutes;
+                }
+
+                var strSeconds = "";
+                if (seconds > -1 && seconds < 10) {
+                    strSeconds = "0" + seconds;
+                } else {
+                    strSeconds = seconds;
+                }
+
+                var ele = document.getElementsByClassName("timer-@productBundle.Id");
+                ele[0].innerHTML = strDays + ":" + strHours + ":"
+                    + strMinutes + ":" + strSeconds;
+
+            }, 1000);
+        </script>
+    }
+
+    <div class="product-bundle-product-box" style="border-bottom-color: @timerColor">
+        <span style="color: @timerColor" class="product-bundle-product-box-span-right">
+            @productBundleCategory.Name
+        </span>
+        @if (productBundle.AmazingStartDateUtc.HasValue && productBundle.AmazingEndDateUtc.HasValue)
+        {
+            <span style="color: @timerColor" class="product-bundle-product-box-span-left timer-@productBundle.Id">
+                00:00:00:00
+            </span>
+        }
+    </div>
+}
+@*else
+    {
+        <div class="product-bundle-product-box">
+
+        </div>
+    }*@
+
+
+<div class="product-item" data-productid="@Model.Id">
+    <div class="picture">
+        <a href="@Url.RouteUrl("Product", new { SeName = Model.SeName })" title="@Model.DefaultPictureModel.Title">
+            @if (string.IsNullOrWhiteSpace(productBundlePictureUrl))
+            {
+                @if (viewComponentSelector.SelectComponent("LazyLoadImage") != null)
+                {
+                    @await Component.InvokeAsync("LazyLoadImage", new (string Key, string Value)[]
+                    {
+                        ("src", Model.DefaultPictureModel.ImageUrl),
+                        ("alt", Model.DefaultPictureModel.AlternateText),
+                        ("title", Model.DefaultPictureModel.Title),
+                        ("class", "picture-img")
+                    })
+                }
+                else
+                {
+                    <img class="picture-img" src="@Model.DefaultPictureModel.ImageUrl"
+                         alt="@Model.DefaultPictureModel.AlternateText" title="@Model.DefaultPictureModel.Title" />
+                }
+            }
+            else
+            {
+                <img class="picture-img" src="@productBundlePictureUrl"
+                     alt="@Model.DefaultPictureModel.AlternateText" title="@Model.DefaultPictureModel.Title" />
+            }
+        </a>
+        <div class="btn-wrapper">
+            @if (!Model.ProductPrice.DisableAddToCompareListButton)
+            {
+                <button type="button" title="@T("ShoppingCart.AddToCompareList")" class="button-2 add-to-compare-list-button" onclick="AjaxCart.addproducttocomparelist('@addtocomparelink');return false;">@T("ShoppingCart.AddToCompareList")</button>
+            }
+            @if (!Model.ProductPrice.DisableWishlistButton)
+            {
+                <button type="button" title="@T("ShoppingCart.AddToWishlist")" class="button-2 add-to-wishlist-button" onclick="AjaxCart.addproducttocart_catalog('@addtowishlistlink');return false;">@T("ShoppingCart.AddToWishlist")</button>
+            }
+        </div>
+    </div>
+    <div class="details">
+        <h2 class="product-title">
+            <a href="@Url.RouteUrl("Product", new {SeName = Model.SeName})">@Model.Name</a>
+        </h2>
+        @if (catalogSettings.ShowSkuOnCatalogPages && !string.IsNullOrEmpty(Model.Sku))
+        {
+            <div class="sku">
+                @Model.Sku
+            </div>
+        }
+        @if (Model.ReviewOverviewModel.AllowCustomerReviews)
+        {
+            var ratingPercent = 0;
+            if (Model.ReviewOverviewModel.TotalReviews != 0)
+            {
+                ratingPercent = ((Model.ReviewOverviewModel.RatingSum * 100) / Model.ReviewOverviewModel.TotalReviews) / 5;
+            }
+            <div class="product-rating-box" title="@string.Format(T("Reviews.TotalReviews").Text, Model.ReviewOverviewModel.TotalReviews)">
+                <div class="rating">
+                    <div style="width: @(ratingPercent)%">
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="description">
+            @Html.Raw(Model.ShortDescription)
+        </div>
+        <div class="add-info">
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBoxAddinfoBefore, additionalData = Model })
+            <div class="prices">
+                @if (productBundle == null)
+                {
+                    if (!string.IsNullOrEmpty(Model.ProductPrice.OldPrice))
+                    {
+                        <span class="price old-price">@Model.ProductPrice.OldPrice</span>
+                    }
+                    <span class="price actual-price">@Model.ProductPrice.Price</span>
+                }
+                else
+                {
+                    if (productBundle.OldPrice > 0)
+                    {
+                        var productBundleOldPrice = priceFormatter.FormatPrice(productBundle.OldPrice);
+                        <span class="price old-price">@productBundleOldPrice</span>
+                    }
+                    var productBundlePrice = priceFormatter.FormatPrice(productBundle.Price);
+                    <span class="price actual-price">@productBundlePrice</span>
+                }
+
+                @if (Model.ProductPrice.DisplayTaxShippingInfo)
+                {
+                    var inclTax = workContext.TaxDisplayType == TaxDisplayType.IncludingTax;
+                    //tax info is already included in the price (incl/excl tax). that's why we display only shipping info here
+                    //of course, you can modify appropriate locales to include VAT info there
+                    <span class="tax-shipping-info">
+                        @T(inclTax ? "Products.Price.TaxShipping.InclTax" : "Products.Price.TaxShipping.ExclTax", Url.RouteUrl("Topic", new { SeName = Html.GetTopicSeName("shippinginfo") }))
+                    </span>
+                }
+                @if (!string.IsNullOrEmpty(Model.ProductPrice.BasePricePAngV))
+                {
+                    <div class="base-price-pangv">
+                        @Model.ProductPrice.BasePricePAngV
+                    </div>
+                }
+            </div>
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBoxAddinfoMiddle, additionalData = Model })
+            <div class="buttons">
+                @*<input type="button" value="@T("Products.Details")" class="button-1 product-box-detail-button" onclick="setLocation('@Url.RouteUrl("Product", new { SeName = Model.SeName })')" />*@
+                @if (!Model.ProductPrice.DisableBuyButton)
+                {
+                    var addToCartText = T("ShoppingCart.AddToCart").Text;
+                    if (Model.ProductPrice.IsRental)
+                    {
+                        addToCartText = T("ShoppingCart.Rent").Text;
+                    }
+                    if (Model.ProductPrice.AvailableForPreOrder)
+                    {
+                        addToCartText = T("ShoppingCart.PreOrder").Text;
+                    }
+                    <input type="button" value="@(addToCartText)" class="button-2 product-box-add-to-cart-button" onclick="AjaxCart.addproducttocart_catalog('@addtocartlink');return false;" />
+                }
+            </div>
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBoxAddinfoAfter, additionalData = Model })
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Misc",
+  "FriendlyName": "ProductBundle",
+  "SystemName": "Misc.ProductBundle",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.30" ],
+  "Author": "Mahdi.r.ln@gmail.com",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.ProductBundle.dll",
+  "Description": "This plugin for product bundle"
+}

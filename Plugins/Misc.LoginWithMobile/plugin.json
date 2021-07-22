@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Misc",
+  "FriendlyName": "LoginWithMobile",
+  "SystemName": "Misc.LoginWithMobile",
+  "Version": "1.0",
+  "SupportedVersions": [ "4.30" ],
+  "Author": "Mahdi.r.ln@gmail.com",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.LoginWithMobile.dll",
+  "Description": "This plugin for login with mobile"
+}

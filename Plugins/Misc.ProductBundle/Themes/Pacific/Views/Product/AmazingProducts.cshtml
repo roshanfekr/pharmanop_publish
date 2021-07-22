@@ -1,0 +1,33 @@
+﻿@model MasterAmazingProductModel
+@{
+    Layout = "_ColumnsTwo";
+
+    //title
+    Html.AddTitleParts(T("PageTitle.Search").Text);
+    //page class
+    Html.AppendPageCssClassParts("html-search-page");
+}
+@using Nop.Plugin.Misc.ProductBundle.Models.Web
+
+<div class="page search-page">
+    <div class="page-title">
+        <h1>@Model.Title</h1>
+    </div>
+    <div class="page-body">
+        <div class="search-results">
+            @if (Model.ProductOverviewListModel.Count > 0)
+            {
+                <div class="product-grid">
+                    <div class="item-grid">
+                        @foreach (var product in Model.ProductOverviewListModel)
+                        {
+                        <div class="item-box">
+                            @await Html.PartialAsync("_ProductBox", product)
+                        </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

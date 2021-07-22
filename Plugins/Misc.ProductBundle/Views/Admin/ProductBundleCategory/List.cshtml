@@ -1,0 +1,130 @@
+﻿@model ProductBundleCategorySearchModel
+@{
+    Layout = "_AdminLayout";
+
+    ViewBag.Title = "کالا های شگفت انگیز";
+
+    //active menu item (system name)
+    //Html.SetActiveMenuItemSystemName("Shipping.Alopeyk.Requests");
+}
+
+@using Nop.Plugin.Misc.ProductBundle.Model.Admin.ProductBundleCategory
+
+<nop-antiforgery-token />
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @T("لیست دسته بندی های باندل")
+    </h1>
+    <div class="pull-right">
+        <a asp-action="Create" class="btn bg-blue">
+            <i class="fa fa-plus-square"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="search-body">
+                    </div>
+
+                    @await Html.PartialAsync("Table", new DataTablesModel
+               {
+                   Name = "product-bundle-category-grid",
+                   UrlRead = new DataUrl("SelectList", "ProductBundleCategory", null),
+                   UrlDelete = new DataUrl("DeleteAjax", "ProductBundleCategory", null),
+                   SearchButtonId = "search-requests",
+                   Length = Model.PageSize,
+                   LengthMenu = Model.AvailablePageSizes,
+                   Filters = new List<FilterParameter>
+                   {
+                       //new FilterParameter(nameof(Model.OrderNumber)),
+                   },
+                   ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.Name))
+                            {
+                                Title = T("نام دسته بندی").Text,
+                                Width = "400"
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.ZoneName))
+                            {
+                                Title = "منطقه مکانی",
+                                Width = "100"
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.BackgroundColor))
+                            {
+                                Title = "زنگ پس زمینه",
+                                Width = "100",
+                                Render = new RenderCustom("renderColumnBackgroundColor")
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.ProductTimerColor))
+                            {
+                                Title = "رنگ تایمر محصول",
+                                Width = "100",
+                                Render = new RenderCustom("renderColumnProductTimerColor")
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.ProductBoxColor))
+                            {
+                                Title = "رنگ باکس محصول",
+                                Width = "100",
+                                Render = new RenderCustom("renderColumnProductBoxColor")
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.DesktopPictureUrl))
+                            {
+                                Title = "تصویر دیکتاپ",
+                                Width = "100",
+                                Render = new RenderPicture()
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.MobilePictureUrl))
+                            {
+                                Title = "تصویر موبایل",
+                                Width = "100",
+                                Render = new RenderPicture()
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("Edit"))
+                            },
+                            new ColumnProperty(nameof(ProductBundleCategoryModel.Id))
+                            {
+                                Title = T("Admin.Common.Delete").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonRemove(T("Admin.Common.Delete").Text)
+                            }
+                        }
+                    })
+                    <script>
+                        function renderColumnBackgroundColor(data, type, row, meta) {
+                            if (data == null) {
+                                data = "------";
+                            }
+                            return '<span class="grid-report-item" style="background-color: ' + row.BackgroundColor + '">' + data + '</span >';
+                        }
+
+                        function renderColumnProductTimerColor(data, type, row, meta) {
+                            if (data == null) {
+                                data = "------";
+                            }
+                            return '<span class="grid-report-item" style="background-color: ' + row.ProductTimerColor + '">' + data + '</span >';
+                        }
+
+                        function renderColumnProductBoxColor(data, type, row, meta) {
+                            if (data == null) {
+                                data = "------";
+                            }
+                            return '<span class="grid-report-item" style="background-color: ' + row.ProductBoxColor + '">' + data + '</span >';
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

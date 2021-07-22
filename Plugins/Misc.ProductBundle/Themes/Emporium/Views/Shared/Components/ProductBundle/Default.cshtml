@@ -1,0 +1,148 @@
+﻿@model ProductBundleMasterModel
+@using Nop.Plugin.Misc.ProductBundle.Model.Web
+@using Nop.Web.Framework.UI
+@{
+    Html.AppendCssFileParts("~/Plugins/Misc.ProductBundle/Content/css/owlcarousel/owl.carousel.min.css");
+    Html.AppendCssFileParts("~/Plugins/Misc.ProductBundle/Content/css/owlcarousel/owl.theme.default.min.css");
+
+    Html.AppendCssFileParts("~/Plugins/Misc.ProductBundle/Themes/Emporium/Content/css/productBundle.css");
+
+    Html.AppendScriptParts(ResourceLocation.Footer, "~/Plugins/Misc.ProductBundle/Themes/Emporium/Content/Scripts/productBundle.js");
+    Html.AppendScriptParts(ResourceLocation.Footer, "~/Plugins/Misc.ProductBundle/Content/Scripts/owlcarousel/owl.carousel.min.js");
+}
+
+<div class="product-bundle-holder" style="background-color: @Model.BackgroundColor;">
+    @if (!string.IsNullOrWhiteSpace(Model.DesktopPictureUrl))
+    {
+    <div class="product-bundle-picture-holder-desktop">
+        <div class="product-bundle-picture-holder-desktop-img-holder">
+            <img src="@Model.DesktopPictureUrl" alt="@Model.Title" title="@Model.Title"/>
+        </div>
+        <div class="product-bundle-picture-holder-desktop-button-holder">
+            <a href="/AmazingProducts/@Model.ProductBundleCategorySeName" class="product-bundle-button1" style="color: @Model.ProductButtonShowAllColor !important" target="_blank">
+                مشاهده همه
+            </a>
+        </div>
+    </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.MobilePictureUrl))
+    {
+        <div class="product-bundle-picture-holder-mobile">
+            <a href="/AmazingProducts/@Model.ProductBundleCategorySeName">
+                <img src="@Model.MobilePictureUrl" alt="@Model.Title" title="@Model.Title"/>
+            </a>
+        </div>
+    }
+    <div class="product-bundle-carousel-holder @if (string.IsNullOrWhiteSpace(Model.DesktopPictureUrl)) { <text> product-bundle-carousel-holder-one-row </text> } ">
+        <div class="owl-carousel owl-theme">
+            @foreach (var item in Model.ProductBundleListModel)
+            {
+            <div class="card card-1 item" style="background-color: @Model.ProductBoxColor">
+                <a href="/@item.ProductSeName" target="_blank">
+                    <img class="card-img" src="@item.ProductPictureUrl" alt="@item.ProductName" title="@item.ProductName">
+                </a>
+                <a href="/@item.ProductSeName" target="_blank">
+                    <span class="card-product-name">@item.ProductName</span>
+                </a>
+                <div class="card-price-holder">
+                    @if (!string.IsNullOrWhiteSpace(item.Percentage))
+                    {
+                        <div class="card-percentage">
+                            @item.Percentage %
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(item.OldPrice))
+                    {
+                        <p class="card-pld-price">@item.OldPrice</p>
+                    }
+                </div>
+                <p class="card-price">@item.Price</p>
+
+                @if (item.AmazingStartDate.HasValue && item.AmazingEndDate.HasValue)
+                {
+                    <div class="card-timer timer-@item.Id">
+                        00:00:00:00
+                    </div>
+                }
+                @if (item.ProductBundlesCount > 0)
+                {
+                    <div class="product-bundle-gift">
+                        @item.ProductBundlesCount محصول هدیه
+                    </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    @*<div class="product-bundle-down-mobile">
+        <a href="/AmazingProducts/@Model.ProductBundleCategoryId" class="product-bundle-button1" target="_blank">
+            مشاهده همه
+        </a>
+    </div>*@
+</div>
+
+@foreach (var item in Model.ProductBundleListModel)
+{
+    <input type="hidden" id="countDownDate-@item.Id" />
+
+    if (item.AmazingStartDate.HasValue && item.AmazingEndDate.HasValue)
+    {
+        <script>
+            var temp = new Date("@item.AmazingEndDate.Value.Year",
+                "@(item.AmazingEndDate.Value.Month - 1)", "@item.AmazingEndDate.Value.Day", "@item.AmazingEndDate.Value.Hour",
+                "@item.AmazingEndDate.Value.Minute", "@item.AmazingEndDate.Value.Second")
+            document.getElementById("countDownDate-@item.Id").value = temp;
+
+            // Update the count down every 1 second
+            var x = setInterval(function () {
+                // Get today's date and time
+                var now = new Date().getTime();
+                // Find the distance between now and the count down date
+                var date = new Date(document.getElementById("countDownDate-@item.Id").value);
+                var distance = Date.parse(date) - now;
+                // Time calculations for days, hours, minutes and seconds
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                var strDays = "";
+                if (days > -1 && days < 10) {
+                    strDays = "0" + days;
+                } else {
+                    strDays = days;
+                }
+
+                var strHours = "";
+                if (hours > -1 && hours < 10) {
+                    strHours = "0" + hours;
+                } else {
+                    strHours = hours;
+                }
+
+                var strMinutes = "";
+                if (minutes > -1 && minutes < 10) {
+                    strMinutes = "0" + minutes;
+                } else {
+                    strMinutes = minutes;
+                }
+
+                var strSeconds = "";
+                if (seconds > -1 && seconds < 10) {
+                    strSeconds = "0" + seconds;
+                } else {
+                    strSeconds = seconds;
+                }
+
+                var ele = document.getElementsByClassName("timer-@item.Id");
+                var i;
+                for (i = 0; i < ele.length; i++) {
+                  ele[i].innerHTML = strDays + ":" + strHours + ":"
+                    + strMinutes + ":" + strSeconds;
+                }
+
+            }, 1000);
+        </script>
+    }
+
+}

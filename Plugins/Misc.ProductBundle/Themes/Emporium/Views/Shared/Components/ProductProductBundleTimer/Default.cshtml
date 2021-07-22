@@ -1,0 +1,44 @@
+﻿@model ProductDetailsModel
+
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Tax
+@using Nop.Services.Configuration
+@using Microsoft.AspNetCore.Mvc.ViewComponents
+@using Nop.Plugin.Misc.ProductBundle.Service
+@using Nop.Plugin.Misc.ProductBundle.Domain
+@using Nop.Services.Catalog
+
+@inject IProductBundleCategoryService productBundleCategoryService
+@inject IProductBundleService productBundleService
+
+@{
+    object attributeCombinationIdObj;
+    Model.CustomProperties.TryGetValue("AttributeCombinationId", out attributeCombinationIdObj);
+
+    ProductBundleCategory productBundleCategory = null;
+    var productBundle = productBundleService.GetAll(productId: Model.Id, justValid: true).FirstOrDefault();
+    if (productBundle != null)
+    {
+        productBundleCategory = productBundleCategoryService.GetById(productBundle.ProductBundleCategoryId.Value);
+    }
+
+    var timerTextColor = "#000000";
+    if (productBundleCategory != null && !string.IsNullOrWhiteSpace(productBundleCategory.ProductTimerTextColor))
+    {
+        timerTextColor = productBundleCategory.ProductTimerTextColor;
+    }
+
+}
+<div id="product-timer-holder">
+    <div class="product-timer">
+        <span class="product-timer-left timer" style="color: @timerTextColor !important">
+            00:00:00:00
+        </span>
+        <span class="product-timer-right">
+            <span id="product-timer-title" style="color: @timerTextColor !important">
+            </span>
+        </span>
+    </div>
+</div>

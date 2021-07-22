@@ -1,0 +1,345 @@
+﻿@media only screen and (max-width: 950px) {
+  /*.card {
+    min-width: 183px !important;
+  }*/
+
+  .product-bundle-picture-holder-mobile {
+    display: block !important;
+  }
+
+  .product-bundle-picture-holder-desktop {
+    display: none !important;
+  }
+
+  .product-bundle-holder {
+    display: block !important;
+  }
+
+  .product-bundle-carousel-holder {
+    width: 100% !important;
+  }
+
+  /*.owl-next {
+      display: none !important;
+  }
+
+  .owl-prev {
+      display: none !important;
+  }*/
+
+  .product-bundle-down-mobile {
+      display: block !important;
+  }
+
+  a.product-bundle-button1 {
+      margin: auto;
+  }
+}
+
+@media only screen and (min-width: 951px) {
+
+  .product-bundle-picture-holder-mobile {
+    display: none !important;
+  }
+
+  .product-bundle-picture-holder-desktop {
+    display: block !important;
+  }
+
+  .product-bundle-picture-holder-desktop img {
+      width: 80% !important;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .card {
+    min-height: 476px !important;
+  }
+}
+
+@media only screen and (min-width: 1327px) {
+  .card {
+    height: 408px !important;
+  }
+}
+
+@media only screen and (min-width: 1327px) {
+  .card {
+    height: 322px !important;
+  }
+}
+
+@media only screen and (min-width: 1942px) {
+  .card {
+    height: 450px !important;
+  }
+
+  .product-bundle-picture-holder-desktop {
+    width: 16% !important;
+  }
+
+  .product-bundle-carousel-holder {
+    width: 84% !important;
+  }
+}
+
+@media only screen and (min-width: 1943px) {
+  .card {
+    height: unset !important;
+  }
+}
+
+.product-bundle-carousel-holder {
+  width: 80%;
+}
+
+.product-bundle-picture-holder-desktop {
+  width: 20%;
+}
+
+.product-bundle-picture-holder-mobile {
+  width: 100%;
+}
+
+.card-product-name {
+  padding: 10px;
+  font-size: 15px;
+}
+
+.card-price-holder {
+  width: 100% !important;
+}
+
+.card-price {
+  text-align: left;
+  padding-left: 10px;
+  color: grey;
+  font-size: 22px;
+}
+
+.card-timer {
+  text-align: left;
+  padding-left: 14px;
+  font-size: 15px;
+  color: red;
+}
+
+.product-bundle-gift {
+  text-align: left;
+  padding-left: 14px;
+  font-size: 15px;
+  color: #19FF00;
+}
+
+.card-pld-price {
+  text-align: left;
+  padding-left: 10px;
+  float: left;
+  width: 80px;
+  text-decoration: line-through;
+}
+
+.card-percentage {
+  background-color: red;
+  color: white;
+  width: 35px;
+  float: left;
+  text-align: center;
+  border-radius: 8px;
+  margin-left: 10px
+}
+
+.card-img {
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+}
+
+.product-bundle-holder {
+  display: flex;
+  border-radius: 10px;
+  margin: 20px 0 20px 0;
+}
+
+.card {
+  border-radius: 10px !important;
+  display: grid !important;
+  background: #fff;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 1rem;
+  position: relative;
+  height: 320px;
+}
+
+.card-1 {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-1:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.card button {
+  border: none;
+  outline: 0;
+  padding: 12px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+.card button:hover {
+  opacity: 0.7;
+}
+
+
+
+
+.product-timer-left {
+  float: left;
+  text-align: left;
+  font-size: 20px;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+.product-timer-right {
+  float: right;
+  text-align: right;
+  font-size: 15px;
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+#product-timer-title {
+    color: #ffffff;
+}
+
+.product-timer {
+  width: 100%;
+  /* background-color: red; */
+  text-align: center;
+  height: 35px;
+  /*border-bottom: 3px solid red;*/
+  color: #ffffff;
+  border-radius: 10px;
+}
+
+@media only screen and (max-width: 1280px) {
+  .product-timer {
+    width: 500px !important;
+    margin: auto;
+  }
+}
+
+@media only screen and (max-width: 520px) {
+  .product-timer {
+    width: 100% !important;
+    margin: auto;
+  }
+}
+
+#product-timer-holder{
+    display: none;
+}
+
+.card-timer:after {
+  content: url('/Plugins/Misc.ProductBundle/Content/timer.png');
+  padding-right: 6px;
+}
+
+.product-bundle-gift:after {
+  content: url('/Plugins/Misc.ProductBundle/Content/gift.png');
+  padding-right: 6px;
+}
+
+.product-detail-cart {
+    min-height: 300px !important;
+}
+
+.product-bundle-carousel-holder-one-row{
+    width: 100% !important;
+}
+
+.owl-prev {
+  width: 46px;
+  height: 80px;
+  position: absolute;
+  right: 0;
+  top: 145px;
+  z-index: 200000;
+  background: white !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.owl-next {
+  width: 46px;
+  height: 80px;
+  position: absolute;
+  left: 0;
+  top: 145px;
+  z-index: 200000;
+  background: white !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.owl-prev span, .owl-next span {
+  font-size: 36px !important;
+}
+
+.owl-prev span:hover {
+    color: #000000 !important;
+}
+
+.owl-prev:hover span, .owl-next:hover span {
+    color: #000000 !important;
+}
+
+a.product-bundle-button1 {
+  display: inline-block;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid #FFFFFF;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto',sans-serif;
+  font-weight: 300;
+  color: #FFFFFF;
+  text-align: center;
+  transition: all 0.2s;
+  margin-right: 30px;
+  font-size: 18px;
+  border-radius: 12px;
+}
+
+a.product-bundle-button1:hover {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+/*@media all and (max-width:30em) {
+   a.product-bundle-button1 {
+    display: block;
+    margin: 0.4em auto;
+  }
+}*/
+
+.product-bundle-down-mobile {
+    display: none;
+}
+
+.card-div-img {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 197px;
+  width: 100%;
+  border-radius: 9px 9px 0 0;
+}

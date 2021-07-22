@@ -1,0 +1,151 @@
+﻿@model ProductBundleModel
+@using Nop.Plugin.Misc.ProductBundle.Model.Admin.ProductBundle
+
+<div asp-validation-summary="All"></div>
+
+<script>
+    $(document).ready(function () {
+        $("#btnLoadProductAttributeCombination").click(function() {
+            var productId = $("#ProductId").val();
+            var ddlAttributeCombination = $("#@Html.IdFor(model => model.AttributeCombinationId)");
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "@(Url.Action("GetProductAttributeCombination", "ProductBundle"))",
+                data: {
+                    "productId": productId
+                },
+                success: function (data, textStatus, jqXHR) {
+                    ddlAttributeCombination.html('');
+                    $.each(data, function (id, option) {
+                        ddlAttributeCombination.append($('<option></option>').val(option.Value).html(option.Text));
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                }
+            });
+        });
+    });
+</script>
+
+<input type="hidden" id="ProductId" name="ProductId" value="@Model.ProductId" />
+<input type="button" id="btnLoadProductAttributeCombination" style="display: none" />
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="ProductName" />
+                        </div>
+                        <div class="col-md-3">
+                            @Html.HiddenFor(model => model.ProductBundleId)
+                            <input id="productName" type="text" class="form-control text-box single-line valid" value="@Model.ProductName" name="@Model.ProductName" readonly />
+                            <span asp-validation-for="ProductName"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" id="btnAddNewCrossSellProduct" onclick="javascript:OpenWindow('@(Url.Action("ProductBundleAddPopup", "ProductBundle", new {productBundleId = Model.Id, btnId = "btnRefreshCrossSellProducts", formId = "productBundleForm"}))', 800, 800, true); return false;" class="btn btn-primary">
+                                @T("افزودن کالا")
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="Price" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Price" />
+                            <span asp-validation-for="Price"></span>
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="OldPrice" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="OldPrice" />
+                            <span asp-validation-for="OldPrice"></span>
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="ProductPictureId" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="ProductPictureId" />
+                            <span asp-validation-for="ProductPictureId"></span>
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="DisplayOrder" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="DisplayOrder" />
+                            <span asp-validation-for="DisplayOrder"></span>
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="Published" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="Published" />
+                            <span asp-validation-for="Published"></span>
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="AttributeCombinationId" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-select asp-for="AttributeCombinationId" asp-items="Model.AvailableProductAttributeCombinations" />
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="ProductBundleCategoryId" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-select asp-for="ProductBundleCategoryId" asp-items="Model.AvailableProductBundleCategories" />
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="AmazingStartDate" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="AmazingStartDate" />
+                            <span asp-validation-for="AmazingStartDate"></span>
+                        </div>
+                    </div>
+                    <div class="form-group advanced-setting">
+                        <div class="col-md-3">
+                            <nop-label asp-for="AmazingEndDate" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-editor asp-for="AmazingEndDate" />
+                            <span asp-validation-for="AmazingEndDate"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <h4>کالا های مرتبط</h4>
+                @if (Model.Id > 0)
+                {
+                    @await Html.PartialAsync("~/Plugins/Misc.ProductBundle/Views/Admin/ProductBundle/_ProductProductBundleMapping.cshtml", Model.ProductProductBundleMappingSearchModel)
+                }
+                else
+                {
+                    <p>لطفا برای انتخاب کالای مرتبط ابتدا کالای اصلی را انتخاب کنید</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

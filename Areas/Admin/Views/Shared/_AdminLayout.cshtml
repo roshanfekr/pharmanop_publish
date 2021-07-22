@@ -64,6 +64,8 @@
         Html.AppendCssFileParts("~/lib/bootstrap/css/bootstrap.min.css");
     }
 
+    Html.AppendCssFileParts("~/Themes/Pacific/Content/css/my-styles.css");
+
     Html.AppendCssFileParts($"~/lib/datatables/buttons.bootstrap.min.css");
     Html.AppendCssFileParts($"~/lib/datatables/buttons.dataTables.min.css");
     Html.AppendCssFileParts($"~/lib/datatables/datatables.min.css");
@@ -308,12 +310,12 @@
                     @*Would you like to remove the "Powered by nopCommerce" link in the bottom of the footer?
                     Please find more info at https://www.nopcommerce.com/nopcommerce-premium-support-services*@
                     <div class="pull-left">
-                        Powered by <a href="https://www.nopcommerce.com/?utm_source=admin-panel&utm_medium=footer&utm_campaign=admin-panel" target="_blank">nopCommerce</a>
+                        Powered by <a href="HADAFDAROO.ir" target="_blank">HADAFDAROO</a>
                     </div>
                 }
-                <div class="pull-right hidden-xs">
+                @*<div class="pull-right hidden-xs">
                     <b>nopCommerce version @NopVersion.CurrentVersion</b>
-                </div>
+                </div>*@
                 <div class="text-center">
                     @dateTimeHelper.ConvertToUserTime(DateTime.Now).ToString("f", currentCulture)
                 </div>

@@ -1,0 +1,64 @@
+﻿@model KavehnegarConfigurationModel
+
+@using Nop.Plugin.Misc.LoginWithMobile.Models
+
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+@await Component.InvokeAsync("StoreScopeConfiguration")
+
+<form asp-controller="LoginWithMobile" asp-action="KavehNegarConfiguration" method="post">
+    <div class="panel-group">
+        <div class="panel panel-default">
+
+
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="SmsToken" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="SmsToken" />
+                    <span asp-validation-for="SmsToken"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="UseSharedMode" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="UseSharedMode" />
+                    <span asp-validation-for="UseSharedMode"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="SharedTemplate" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="SharedTemplate" />
+                    <span asp-validation-for="SharedTemplate"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <nop-label asp-for="SmsStaticNumber" />
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="SmsStaticNumber" />
+                    <span asp-validation-for="SmsStaticNumber"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-3">
+                    <input type="submit" name="save" class="btn bg-blue" value="@T("Admin.Common.Save")" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

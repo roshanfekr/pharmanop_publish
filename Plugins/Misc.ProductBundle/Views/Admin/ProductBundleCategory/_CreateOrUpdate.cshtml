@@ -1,0 +1,226 @@
+﻿@model ProductBundleCategoryModel
+@using Nop.Plugin.Misc.ProductBundle.Model.Admin.ProductBundleCategory
+
+@{
+    Html.AddScriptParts("~/lib/farbtastic/farbtastic.js");
+    Html.AddCssFileParts("~/lib/farbtastic/farbtastic.css");
+}
+
+<div asp-validation-summary="All"></div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="Name" />
+                        </div>
+                        <div class="col-md-3">
+                            <nop-editor asp-for="Name" />
+                            <span asp-validation-for="Name"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="SeName" />
+                        </div>
+                        <div class="col-md-3">
+                            <nop-editor asp-for="SeName" />
+                            <span asp-validation-for="SeName"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="ProductTimerTitle" />
+                        </div>
+                        <div class="col-md-3">
+                            <nop-editor asp-for="ProductTimerTitle" />
+                            <span asp-validation-for="ProductTimerTitle"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="ZoneName" />
+                        </div>
+                        <div class="col-md-3">
+                            @*<nop-editor asp-for="ZoneName" />*@
+                            <nop-select asp-for="ZoneName" asp-items="Model.AvailableZones" />
+                            <span asp-validation-for="ZoneName"></span>
+                        </div>
+                    </div>
+                    @if (string.IsNullOrEmpty(Model.BackgroundColor))
+                    {
+                        Model.BackgroundColor = "#000000";
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="BackgroundColor" />
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="BackgroundColor" />
+                            <div id="color-picker-background-color"></div>
+                            <script>
+                                    $(document).ready(function(){
+                                        $('#color-picker-background-color').farbtastic('#@Html.IdFor(model => model.BackgroundColor)');
+                                    });
+                            </script>
+                            <span asp-validation-for="BackgroundColor"></span>
+                        </div>
+                    </div>
+                    @if (string.IsNullOrEmpty(Model.ProductDetailBackgroundColor))
+                    {
+                        Model.ProductDetailBackgroundColor = "#000000";
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="ProductDetailBackgroundColor" />
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="ProductDetailBackgroundColor" />
+                            <div id="color-picker-product-detail-background-color"></div>
+                            <script>
+                                    $(document).ready(function(){
+                                        $('#color-picker-product-detail-background-color').farbtastic('#@Html.IdFor(model => model.ProductDetailBackgroundColor)');
+                                    });
+                            </script>
+                            <span asp-validation-for="ProductDetailBackgroundColor"></span>
+                        </div>
+                    </div>
+                    @if (string.IsNullOrEmpty(Model.ProductTimerColor))
+                    {
+                        Model.ProductTimerColor = "#000000";
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="ProductTimerColor" />
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="ProductTimerColor" />
+                            <div id="color-picker-product-timer-color"></div>
+                            <script>
+                                $(document).ready(function(){
+                                    $('#color-picker-product-timer-color').farbtastic('#@Html.IdFor(model => model.ProductTimerColor)');
+                                });
+                            </script>
+                            <span asp-validation-for="ProductTimerColor"></span>
+                        </div>
+                    </div>
+                    @if (string.IsNullOrEmpty(Model.ProductTimerTextColor))
+                    {
+                        Model.ProductTimerTextColor = "#000000";
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="ProductTimerTextColor" />
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="ProductTimerTextColor" />
+                            <div id="color-picker-product-timer-text-color"></div>
+                            <script>
+                                $(document).ready(function(){
+                                    $('#color-picker-product-timer-text-color').farbtastic('#@Html.IdFor(model => model.ProductTimerTextColor)');
+                                });
+                            </script>
+                            <span asp-validation-for="ProductTimerTextColor"></span>
+                        </div>
+                    </div>
+                    @if (string.IsNullOrEmpty(Model.ProductBoxColor))
+                    {
+                        Model.ProductBoxColor = "#000000";
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="ProductBoxColor" />
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="ProductBoxColor" />
+                            <div id="color-picker-product-box-color"></div>
+                            <script>
+                                    $(document).ready(function(){
+                                        $('#color-picker-product-box-color').farbtastic('#@Html.IdFor(model => model.ProductBoxColor)');
+                                    });
+                            </script>
+                            <span asp-validation-for="ProductBoxColor"></span>
+                        </div>
+                    </div>
+                    @if (string.IsNullOrEmpty(Model.ProductButtonShowAllColor))
+                    {
+                        Model.ProductButtonShowAllColor = "#000000";
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="ProductButtonShowAllColor" />
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="ProductButtonShowAllColor" />
+                            <div id="color-picker-product-button-show-all-color"></div>
+                            <script>
+                                    $(document).ready(function(){
+                                        $('#color-picker-product-button-show-all-color').farbtastic('#@Html.IdFor(model => model.ProductButtonShowAllColor)');
+                                    });
+                            </script>
+                            <span asp-validation-for="ProductButtonShowAllColor"></span>
+                        </div>
+                    </div>
+                    @if (string.IsNullOrEmpty(Model.ProductButtonShowAllHoverColor))
+                    {
+                        Model.ProductButtonShowAllHoverColor = "#000000";
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="ProductButtonShowAllHoverColor" />
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="ProductButtonShowAllHoverColor" />
+                            <div id="color-picker-product-button-show-all-hover-color"></div>
+                            <script>
+                                    $(document).ready(function(){
+                                        $('#color-picker-product-button-show-all-hover-color').farbtastic('#@Html.IdFor(model => model.ProductButtonShowAllHoverColor)');
+                                    });
+                            </script>
+                            <span asp-validation-for="ProductButtonShowAllHoverColor"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="DesktopPictureId" />
+                        </div>
+                        <div class="col-md-3">
+                            <nop-editor asp-for="DesktopPictureId" />
+                            <span asp-validation-for="DesktopPictureId"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="MobilePictureId" />
+                        </div>
+                        <div class="col-md-3">
+                            <nop-editor asp-for="MobilePictureId" />
+                            <span asp-validation-for="MobilePictureId"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="DetailDesktopPictureId" />
+                        </div>
+                        <div class="col-md-3">
+                            <nop-editor asp-for="DetailDesktopPictureId" />
+                            <span asp-validation-for="DetailDesktopPictureId"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="DetailMobilePictureId" />
+                        </div>
+                        <div class="col-md-3">
+                            <nop-editor asp-for="DetailMobilePictureId" />
+                            <span asp-validation-for="DetailMobilePictureId"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

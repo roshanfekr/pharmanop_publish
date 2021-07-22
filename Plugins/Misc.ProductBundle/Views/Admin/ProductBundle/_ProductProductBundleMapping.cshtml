@@ -1,0 +1,60 @@
+﻿@model ProductProductBundleMappingSearchModel;
+@using Nop.Plugin.Misc.ProductBundle.Model.Admin.ProductBundle
+
+@Html.HiddenFor(model => model.ProductBundleId)
+
+<div class="panel-body">
+    <div class="form-group">
+        <div class="col-md-12">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+   {
+       Name = "product-product-bundle-mapping-grid",
+       UrlRead = new DataUrl("ProductProductBundleMappingList", "ProductBundle", null),
+       UrlDelete = new DataUrl("DeleteProductProductBundleMapping", "ProductBundle", null),
+       Length = Model.PageSize,
+       LengthMenu = Model.AvailablePageSizes,
+       Filters = new List<FilterParameter>
+        {
+            new FilterParameter(nameof(Model.ProductBundleId)),
+        },
+       ColumnCollection = new List<ColumnProperty>
+            {
+                new ColumnProperty(nameof(ProductProductBundleMappingModel.ProductPictureUrl))
+                {
+                    Title = "نام محصول",
+                    Render = new RenderPicture(),
+                    Width = "100",
+                },
+                new ColumnProperty(nameof(ProductProductBundleMappingModel.ProductName))
+                {
+                    Title = "عکس محصول",
+                },
+                new ColumnProperty(nameof(ProductProductBundleMappingModel.ProductBundleIdProductId))
+                {
+                    Title = T("Admin.Common.Delete").Text,
+                    Width = "100",
+                    Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                    ClassName = NopColumnClassDefaults.Button
+                }
+            }
+   })
+        </div>
+    </div>
+</div>
+<div class="panel-footer">
+        <button type="submit" id="btnAddNewCrossSellProduct" onclick="javascript:OpenWindow('@(Url.Action("ProductProductBundleAddPopup", "ProductBundle", new {productBundleId = Model.ProductBundleId, btnId = "btnRefreshCrossSellProducts", formId = "product-form"}))', 800, 800, true); return false;" class="btn btn-primary">
+            @T("افزودن کالا")
+        </button>
+        @*<input type="submit" id="btnRefreshCrossSellProducts" style="display: none" />
+        <script>
+            $(document).ready(function () {
+                $('#btnRefreshCrossSellProducts').click(function () {
+                    //refresh grid
+                    updateTable('#crosssellproducts-grid');
+
+                    //return false to don't reload a page
+                    return false;
+                });
+            });*@
+        </script>
+    </div>
