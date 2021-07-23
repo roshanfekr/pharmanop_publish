@@ -161,8 +161,8 @@ input[type="radio"] + * {
 input[type="button"],
 input[type="submit"],
 button {
-    font-family: 'Roboto', sans-serif;
-	cursor: pointer;
+    font-family: Vazir,'Roboto', sans-serif;
+    cursor: pointer;
 }
 label, label + * {
 	vertical-align: middle;
@@ -3669,8 +3669,7 @@ span[title~="White"] .attribute-square {
 .overview .add-to-cart-panel,
 .variant-overview .add-to-cart-panel {
     position: relative;
-    overflow: hidden;
-    direction: ltr;
+    overflow: hidden; 
 }
 .overview .qty-label,
 .variant-overview .qty-label {
